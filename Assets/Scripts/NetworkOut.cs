@@ -24,4 +24,31 @@ public class NetworkOut : MonoBehaviour
 
         NetworkManager.NetworkManagerInstance.GameServer.SendToAll(m);
     }
+
+    private static void SendResourceSpawnMessage()
+    {
+        int resourceSpawnMin = 2;
+        int resourceSpawnMax = 5;
+        int spawnCount = Random.Range(resourceSpawnMin, resourceSpawnMax);
+        for (int i = 0; i < spawnCount; i++)
+        {
+            ushort resourceId = (ushort)Random.Range(0, 9);
+            int resourceValue = Random.Range(10, 15) * (Mathf.FloorToInt((resourceId) / 3) + 1);
+            string resourceType = MathExt.Roll(2) ? "typeA" : "typeB";
+            Message m = Message.Create(MessageSendMode.reliable, (ushort)ServerToClientID.resourceSpawn);
+            m.AddUShort(resourceId);
+            m.AddUShort((ushort)resourceValue);
+            m.AddString("Type");
+            NetworkManager.NetworkManagerInstance.GameServer.SendToAll(m);
+        }
+    }
+
+    public static void SendStateMessage(GameState state)
+    {
+        Message m = Message.Create(MessageSendMode.reliable, (ushort)ServerToClientID.stateChange);
+        m.AddUShort((ushort)state);
+
+        NetworkManager.NetworkManagerInstance.GameServer.SendToAll(m);
+    }
+
 }

@@ -35,6 +35,16 @@ public class NetworkIn : MonoBehaviour
     [MessageHandler((ushort)ClientToServerID.points)]
     private static void ManagePoints(ushort clientID, Message message)
     {
-
+        ushort playerID = message.GetUShort();
+        ushort points = message.GetUShort();
+        ushort resourceA = message.GetUShort();
+        ushort resourceB = message.GetUShort();
     }
+
+    [MessageHandler((ushort)ClientToServerID.playerReady)]
+    private static void GetPlayerReadyMessage(ushort clientID, Message message)
+    {
+        GameManager.playerReady[clientID-1] = message.GetBool();
+    }
+
 }

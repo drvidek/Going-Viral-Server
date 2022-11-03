@@ -7,7 +7,8 @@ public enum ClientToServerID : ushort
     name = 1,
     towerSpawn,
     mobSpawn,
-    points
+    points,
+    playerReady
 }
 
 public enum ServerToClientID : ushort
@@ -16,7 +17,8 @@ public enum ServerToClientID : ushort
     towerSpawn,
     mobSpawn,
     points,
-    resourceSpawn
+    resourceSpawn,
+    stateChange
 }
 
 public class NetworkManager : MonoBehaviour
