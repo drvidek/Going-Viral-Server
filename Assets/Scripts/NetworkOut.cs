@@ -5,6 +5,9 @@ using RiptideNetworking;
 
 public class NetworkOut : MonoBehaviour
 {
+    /// <summary>
+    /// Send a message to the clients about a tower spawning
+    /// </summary>
     public static void SendTowerMessage(ushort playerId, ushort locId, ushort towerId)
     {
         Message m = Message.Create(MessageSendMode.reliable, (ushort)ServerToClientID.towerSpawn);
@@ -15,6 +18,9 @@ public class NetworkOut : MonoBehaviour
         NetworkManager.NetworkManagerInstance.GameServer.SendToAll(m);
     }
 
+    /// <summary>
+    /// Send a message to the clients about a mob spawning
+    /// </summary>
     public static void SendMobMessage(ushort playerId, ushort locId, ushort mobID)
     {
         Message m = Message.Create(MessageSendMode.reliable, (ushort)ServerToClientID.mobSpawn);
@@ -25,7 +31,7 @@ public class NetworkOut : MonoBehaviour
         NetworkManager.NetworkManagerInstance.GameServer.SendToAll(m);
     }
 
-    private static void SendResourceSpawnMessage()
+    public static void SendResourceSpawnMessage()
     {
         int resourceSpawnMin = 2;
         int resourceSpawnMax = 5;
