@@ -31,29 +31,53 @@ public class NetworkOut : MonoBehaviour
         NetworkManager.NetworkManagerInstance.GameServer.SendToAll(m);
     }
 
-    public static void SendResourceSpawnMessage()
+    /// <summary>
+    /// Randomise and spawn resources at clients
+    /// </summary>
+    public static void SendResourceSpawnMessage(int spawnMin, int spawnMax)
     {
-        int resourceSpawnMin = 2;
-        int resourceSpawnMax = 5;
-        int spawnCount = Random.Range(resourceSpawnMin, resourceSpawnMax);
+        //randomise the spawn count
+        int spawnCount = Random.Range(spawnMin, spawnMax);
+
+        //spawn that many points at random locations, weighting their 
         for (int i = 0; i < spawnCount; i++)
         {
             ushort resourceId = (ushort)Random.Range(0, 9);
             int resourceValue = Random.Range(10, 15) * (Mathf.FloorToInt((resourceId) / 3) + 1);
-            string resourceType = MathExt.Roll(2) ? "typeA" : "typeB";
+            string resourceType = MathExt.Roll(2) ? "DepositCrypto" : "DepositRAM";
             Message m = Message.Create(MessageSendMode.reliable, (ushort)ServerToClientID.resourceSpawn);
             m.AddUShort(resourceId);
             m.AddUShort((ushort)resourceValue);
-            m.AddString("Type");
+            m.AddString(resourceType);
             NetworkManager.NetworkManagerInstance.GameServer.SendToAll(m);
         }
     }
 
+    /// <summary>
+    /// Send a message containing the game state to clients
+    /// </summary>
+    /// <param name="state"></param>
     public static void SendStateMessage(GameState state)
     {
         Message m = Message.Create(MessageSendMode.reliable, (ushort)ServerToClientID.stateChange);
         m.AddUShort((ushort)state);
 
+        NetworkManager.NetworkManagerInstance.GameServer.SendToAll(m);
+    }
+
+    /// <summary>
+    /// Send the score table to clients
+    /// </summary>
+    public static void SendPointsMessage()
+    {
+        Message m = Message.Create(MessageSendMode.reliable, (ushort)ServerToClientID.points);
+        for (var i = 0; i < 2; i++)
+        {
+            for (var ii = 0; ii < 3; ii++)
+            {
+                m.AddUShort(GameManager.scoreTable[i, ii]);
+            }
+        }
         NetworkManager.NetworkManagerInstance.GameServer.SendToAll(m);
     }
 

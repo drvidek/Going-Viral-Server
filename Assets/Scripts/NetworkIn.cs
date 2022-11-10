@@ -39,6 +39,9 @@ public class NetworkIn : MonoBehaviour
         ushort points = message.GetUShort();
         ushort resourceA = message.GetUShort();
         ushort resourceB = message.GetUShort();
+
+        GameManager.UpdatePlayerTotals(playerID, points, resourceA, resourceB);
+
     }
 
     [MessageHandler((ushort)ClientToServerID.playerReady)]
