@@ -20,6 +20,9 @@ public class GameManager : MonoBehaviour
 
     public static ushort[,] scoreTable = new ushort[2, 3];
 
+    private ushort _turnCounter;
+    public static ushort mobCounter;
+
 
 
     private void Start()
@@ -90,8 +93,7 @@ public class GameManager : MonoBehaviour
 
         }
 
-        //synchornise the points
-        NetworkOut.SendPointsMessage();
+        NetworkOut.SendMobCountMessage(mobCounter);
 
         //update the game state
         UpdateGameState(_currentState);
@@ -115,6 +117,11 @@ public class GameManager : MonoBehaviour
             yield return null;
 
         }
+
+        _turnCounter++;
+        mobCounter = 0;
+
+
         UpdateGameState(_currentState);
         NextState();
     }
@@ -160,8 +167,13 @@ public class GameManager : MonoBehaviour
         //reset the ready status of both players
         playerReady[0] = false;
         playerReady[1] = false;
+
+        //synchornise the points
+        NetworkOut.SendPointsMessage();
+
         //send the current state to the clients
-        NetworkOut.SendStateMessage(_currentState);
+        NetworkOut.SendStateMessage(_currentState, _turnCounter);
+
     }
 
 }

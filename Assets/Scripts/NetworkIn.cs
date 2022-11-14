@@ -28,7 +28,7 @@ public class NetworkIn : MonoBehaviour
         ushort playerID = message.GetUShort();
         ushort locationID = message.GetUShort();
         ushort mobID = message.GetUShort();
-
+        GameManager.mobCounter++;
         NetworkOut.SendMobMessage(playerID, locationID, mobID);
     }
 

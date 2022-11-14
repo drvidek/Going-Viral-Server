@@ -57,13 +57,21 @@ public class NetworkOut : MonoBehaviour
     /// Send a message containing the game state to clients
     /// </summary>
     /// <param name="state"></param>
-    public static void SendStateMessage(GameState state)
+    public static void SendStateMessage(GameState state, ushort turn)
     {
         Message m = Message.Create(MessageSendMode.reliable, (ushort)ServerToClientID.stateChange);
         m.AddUShort((ushort)state);
-
+        m.AddUShort(turn);
         NetworkManager.NetworkManagerInstance.GameServer.SendToAll(m);
     }
+
+    public static void SendMobCountMessage(ushort count)
+    {
+        Message m = Message.Create(MessageSendMode.reliable, (ushort)ServerToClientID.mobCount);
+        m.AddUShort(count);
+        NetworkManager.NetworkManagerInstance.GameServer.SendToAll(m);
+    }
+
 
     /// <summary>
     /// Send the score table to clients
