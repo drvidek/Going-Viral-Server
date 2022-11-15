@@ -21,6 +21,7 @@ public class GameManager : MonoBehaviour
     public static ushort[,] scoreTable = new ushort[2, 3];
 
     private ushort _turnCounter;
+    [SerializeField] private ushort _turnCounterMax = 3;
     public static ushort mobCounter;
 
 
@@ -49,6 +50,7 @@ public class GameManager : MonoBehaviour
                 StartCoroutine("StatePlay");
                 break;
             case GameState.PostGame:
+                StartCoroutine("StatePostGame");
                 break;
             default:
                 break;
@@ -68,7 +70,10 @@ public class GameManager : MonoBehaviour
         while (_currentState == GameState.PreGame)
         {
             if (NetworkManager.NetworkManagerInstance.GameServer.ClientCount == 2)
+            {
+                _turnCounter = 0;
                 _currentState = GameState.Build;
+            }
             yield return null;
         }
         UpdateGameState(_currentState);
@@ -120,11 +125,26 @@ public class GameManager : MonoBehaviour
 
         _turnCounter++;
         mobCounter = 0;
-
+        if (_turnCounter == _turnCounterMax)
+            _currentState = GameState.PostGame;
 
         UpdateGameState(_currentState);
         NextState();
     }
+
+    IEnumerator StatePostGame()
+    {
+
+        while (_currentState == GameState.PostGame)
+        {
+ 
+            yield return null;
+
+        }
+
+        NextState();
+    }
+
 
     /// <summary>
     /// Returns to the PreGame state if less than 2 players are present

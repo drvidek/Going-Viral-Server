@@ -362,3 +362,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _currentState: 0
   timerMax: 60
+  _turnCounterMax: 3
