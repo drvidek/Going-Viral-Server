@@ -89,4 +89,11 @@ public class NetworkOut : MonoBehaviour
         NetworkManager.NetworkManagerInstance.GameServer.SendToAll(m);
     }
 
+    public static void SendTimerMessage(ushort time)
+    {
+        Message m = Message.Create(MessageSendMode.reliable, (ushort)ServerToClientID.timer);
+        m.AddUShort(time);
+        NetworkManager.NetworkManagerInstance.GameServer.SendToAll(m);
+    }
+
 }

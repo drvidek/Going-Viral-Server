@@ -94,6 +94,9 @@ public class GameManager : MonoBehaviour
             }
             //otherwise we count down towards 0 by real time
             timer = Mathf.MoveTowards(timer, 0, Time.deltaTime);
+
+            NetworkOut.SendTimerMessage((ushort)timer);
+
             yield return null;
 
         }
