@@ -64,7 +64,7 @@ public class GameManager : MonoBehaviour
 
     IEnumerator StatePreGame()
     {
-        ResetPlayersReady();
+        Reset();
         while (_currentState == GameState.PreGame)
         {
             if (NetworkManager.NetworkManagerInstance.GameServer.ClientCount == 2)
@@ -141,7 +141,7 @@ public class GameManager : MonoBehaviour
 
         while (_currentState == GameState.PostGame)
         {
- 
+
             yield return null;
 
         }
@@ -155,8 +155,11 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void ReturnToPregameCheck()
     {
-        if (NetworkManager.NetworkManagerInstance.GameServer.ClientCount < 2)
-            UpdateGameState(GameState.PreGame);
+        if (NetworkManager.NetworkManagerInstance.GameServer.ClientCount == 2)
+            return;
+        if (_currentState == GameState.PostGame && NetworkManager.NetworkManagerInstance.GameServer.ClientCount > 0)
+            return;
+        UpdateGameState(GameState.PreGame);
     }
 
     /// <summary>
@@ -201,6 +204,23 @@ public class GameManager : MonoBehaviour
     {
         playerReady[0] = false;
         playerReady[1] = false;
+    }
+
+    private void ResetScoreTable()
+    {
+        for (int i = 0; i < 2; i++)
+        {
+            for (int ii = 0; ii < 3; ii++)
+            {
+                scoreTable[i, ii] = 0;
+            }
+        }
+    }
+
+    private void Reset()
+    {
+        ResetPlayersReady();
+        ResetScoreTable();
     }
 
 }
