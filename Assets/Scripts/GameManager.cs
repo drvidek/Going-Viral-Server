@@ -12,7 +12,6 @@ public enum GameState
 }
 public class GameManager : MonoBehaviour
 {
-
     public GameState _currentState = GameState.PreGame;
     [SerializeField] private float timerMax = 120;
     private float timer;
@@ -23,8 +22,6 @@ public class GameManager : MonoBehaviour
     private ushort _turnCounter;
     [SerializeField] private ushort _turnCounterMax = 3;
     public static ushort mobCounter;
-
-
 
     private void Start()
     {
@@ -62,11 +59,12 @@ public class GameManager : MonoBehaviour
         //check if a player disconnected, and return to pregame if so
         ReturnToPregameCheck();
         //return the ready status of the two players
-        Debug.Log($"Player 1: {(playerReady[0] ? "Ready" : "Not ready")} / Player 2: {(playerReady[1] ? "Ready" : "Not ready")}");
+        Debug.Log($"Turn {_turnCounter} / Player 1: {(playerReady[0] ? "Ready" : "Not ready")} / Player 2: {(playerReady[1] ? "Ready" : "Not ready")}");
     }
 
     IEnumerator StatePreGame()
     {
+        ResetPlayersReady();
         while (_currentState == GameState.PreGame)
         {
             if (NetworkManager.NetworkManagerInstance.GameServer.ClientCount == 2)
@@ -84,6 +82,8 @@ public class GameManager : MonoBehaviour
     IEnumerator StateBuild()
     {
         RestartTimer();
+        ResetPlayersReady();
+
         while (_currentState == GameState.Build)
         {
             //if we run out of time or if both players are ready
@@ -111,6 +111,7 @@ public class GameManager : MonoBehaviour
 
     IEnumerator StatePlay()
     {
+        ResetPlayersReady();
         int resourceSpawnMin = 2;
         int resourceSpawnMax = 5;
         NetworkOut.SendResourceSpawnMessage(resourceSpawnMin, resourceSpawnMax);
@@ -187,9 +188,6 @@ public class GameManager : MonoBehaviour
     {
         //set the server gamestate to the input state
         _currentState = state;
-        //reset the ready status of both players
-        playerReady[0] = false;
-        playerReady[1] = false;
 
         //synchornise the points
         NetworkOut.SendPointsMessage();
@@ -197,6 +195,12 @@ public class GameManager : MonoBehaviour
         //send the current state to the clients
         NetworkOut.SendStateMessage(_currentState, _turnCounter);
 
+    }
+
+    private void ResetPlayersReady()
+    {
+        playerReady[0] = false;
+        playerReady[1] = false;
     }
 
 }

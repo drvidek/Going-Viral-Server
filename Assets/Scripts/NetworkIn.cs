@@ -47,7 +47,9 @@ public class NetworkIn : MonoBehaviour
     [MessageHandler((ushort)ClientToServerID.playerReady)]
     private static void GetPlayerReadyMessage(ushort clientID, Message message)
     {
-        GameManager.playerReady[clientID-1] = message.GetBool();
+        bool ready = message.GetBool();
+        Debug.Log($"Ready message { ready} from player {clientID}");
+        GameManager.playerReady[clientID - 1] = ready;
     }
 
 }
